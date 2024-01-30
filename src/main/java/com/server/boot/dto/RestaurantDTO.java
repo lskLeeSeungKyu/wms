@@ -7,7 +7,7 @@ import lombok.Setter;
 @Setter
 public class RestaurantDTO {
 
-    private String name;
+    private double name;
     private double latitude;
     private double longitude;
 }
