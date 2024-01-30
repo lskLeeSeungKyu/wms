@@ -8,6 +8,6 @@ import lombok.Setter;
 public class RestaurantDTO {
 
     private String name;
-    private int latitude;
-    private int longitude;
+    private double latitude;
+    private double longitude;
 }
