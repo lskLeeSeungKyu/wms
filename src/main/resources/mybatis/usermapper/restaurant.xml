@@ -7,6 +7,10 @@
         INSERT INTO "GPT_GIS".RESTAURANTS (NAME, LATITUDE, LONGITUDE) VALUES (#{name}, #{latitude}, #{longitude})
     </insert>
 
+    <delete id="restaurantDelete">
+        DELETE FROM "GPT_GIS".RESTAURANTS WHERE ID = #{restaurantId}
+    </delete>
+
     <select id="selectRestaurant" resultType="RestaurantDTO">
         SELECT * FROM "GPT_GIS".RESTAURANTS WHERE ID = #{restaurantId}
     </select>

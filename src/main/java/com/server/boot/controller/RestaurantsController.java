@@ -21,6 +21,11 @@ public class RestaurantsController {
         return restaurantService.restaurantEntry(restaurantDTO);
     }
 
+    @PostMapping("/restaurantDelete")
+    public Map<String, String> restaurantDelete(@RequestBody Map<String, Integer> map) {
+        return restaurantService.restaurantDelete(map);
+    }
+
     @GetMapping("/selectRestaurant")
     public RestaurantDTO selectRestaurant(@RequestParam int restaurantId) {
         return restaurantService.selectRestaurant(restaurantId);

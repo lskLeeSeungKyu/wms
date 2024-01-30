@@ -24,6 +24,14 @@ public class RestaurantService {
         return resultMap;
     }
 
+    @Transactional
+    public Map<String, String> restaurantDelete(Map<String, Integer> map) {
+        restaurantDAO.restaurantDelete(map);
+        Map<String, String> resultMap = new HashMap<>();
+        resultMap.put("result", "success");
+        return resultMap;
+    }
+
     @Transactional(readOnly = true)
     public RestaurantDTO selectRestaurant(int restaurantId) {
         return restaurantDAO.selectRestaurant(restaurantId);
@@ -33,4 +41,6 @@ public class RestaurantService {
     public List<RestaurantDTO> selectRestaurantAll() {
         return restaurantDAO.selectRestaurantAll();
     }
+
+
 }
