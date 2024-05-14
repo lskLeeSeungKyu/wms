@@ -27,12 +27,12 @@ public class RestControllerDBException {
 
         resultMap.put("result", "fail");
         resultMap.put("errorMessage", errorMessage);
-        log.info("writeBoard errorLog = {}", errorMessage);
+        log.info("errorLog = {}", errorMessage);
 
         if(cause != null) {
             String errorCause = cause.getMessage();
             resultMap.put("errorCause", errorCause);
-            log.info("writeBoard errorLog = {}", errorCause);
+            log.info("errorLog = {}", errorCause);
         }
 
         return resultMap;

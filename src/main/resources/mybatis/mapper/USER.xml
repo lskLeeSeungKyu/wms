@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.server.boot.dao.UserDAO">
+    <!-- 로그인 시 -->
+    <select id="findByUser" parameterType="String" resultType="UserDTO">
+        SELECT * FROM "WMS"."USER" WHERE "ID" = #{ID}
+    </select>
+
+    <!-- 사용자 게시판 조회 -->
+    <select id="selectUser" parameterType="Map" resultType="UserDTO">
+        SELECT * FROM "WMS"."USER"
+        <where>
+            <if test="ID != null and ID != ''">
+                AND "ID" LIKE #{ID} || '%'
+            </if>
+            <if test="NAME != null and NAME != ''">
+                AND "NAME" LIKE #{NAME} || '%'
+            </if>
+        </where>
+    </select>
+
+    <update id="userModify" parameterType="UserDTO">
+        UPDATE "WMS"."USER"
+        SET "EMAIL" = #{email},
+            "HTEL" = #{hTel},
+            "PW" = #{pw}
+            WHERE "ID" = #{id}
+            AND "NAME" = #{name}
+    </update>
+
+    <insert id="userGenerate" parameterType="UserDTO">
+        INSERT INTO "WMS"."USER" ("ID", "PW", "EMAIL", "HTEL", "NAME") VALUES
+        (#{id}, #{pw}, #{email}, #{hTel}, #{name})
+    </insert>
+
+    <delete id="userDelete" parameterType="UserDTO">
+        DELETE FROM "WMS"."USER" WHERE "ID" = #{id}
+    </delete>
+
+    <select id="mainPageQuery" parameterType="String" resultType="Map">
+        ${query}
+    </select>
+</mapper>
