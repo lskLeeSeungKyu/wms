@@ -1,5 +1,6 @@
 package com.server.boot.socket;
 
+import com.server.boot.controller.UserController;
 import com.server.boot.dto.UserDTO;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
@@ -23,13 +24,38 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionEstablished(WebSocketSession session) throws Exception { // 클라이언트에서 소켓 연결시 처음 호출
-        System.out.println("Connected = " + session);
+
         HttpSession httpSession = (HttpSession)session.getAttributes().get("HTTP_SESSION");
+
+        // 중복 로그인으로 로그인했다면 웹소켓에서 기존 세션을 만료시킨다.
+        if(UserController.multiLoginFlag == true) {
+            UserDTO loginUser = (UserDTO)httpSession.getAttribute("user");
+            String logindUserId = "";
+
+            for(Map.Entry<String, UserDTO> elem : socketSessionRepository.entrySet()) {
+                if(Objects.equals(elem.getValue().getId(), loginUser.getId())) {
+                    logindUserId = elem.getKey(); //기존 로그인 유저의 sessionid
+                }
+            }
+
+            for (WebSocketSession s : sessions) {
+                if(Objects.equals(s.getId(), logindUserId)) {
+                    s.sendMessage(new TextMessage("multiLogin"));
+                    sessions.remove(s);
+                }
+            }
+        }
+
+        System.out.println("Connected = " + session);
+
+
         socketSessionRepository.put(session.getId(), (UserDTO)httpSession.getAttribute("user"));
         UserDTO user = socketSessionRepository.get(session.getId());
 
         userList.add(user.getName());
         sessions.add(session);
+
+        UserController.multiLoginFlag = false;
     }
 
     @Override
@@ -61,6 +87,8 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
 
     @Override
     public void afterConnectionClosed(WebSocketSession session, CloseStatus status) throws Exception {
+
+        System.out.println("disConnected = " + session);
 
         UserDTO user = socketSessionRepository.get(session.getId());
         userList.remove(user.getName());

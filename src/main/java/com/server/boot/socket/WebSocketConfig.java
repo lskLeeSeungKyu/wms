@@ -15,7 +15,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new MyWebSocketHandler(), "/websocket-endpoint")
                 .addInterceptors(new CustomHttpSessionHandshakeInterceptor())
-                .setAllowedOrigins("http://10.101.52.96:8081");
+                .setAllowedOrigins("http://39.115.244.28:8081");
     }
 
 }
