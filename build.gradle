@@ -24,6 +24,17 @@ dependencies {
 	implementation 'org.mybatis.spring.boot:mybatis-spring-boot-starter:2.2.0'
 	implementation 'org.springframework.boot:spring-boot-starter-aop'
 	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation files('libs/jasperreports-6.2.0.jar')
+	implementation files('libs/commons-beanutils-1.9.4.jar')
+	implementation files('libs/commons-digester-2.1.jar')
+	implementation files('libs/commons-collections-3.2.1.jar')
+	implementation files('libs/commons-logging-1.2.jar')
+	/*
+	* 외부 라이브러리를 추가한 것은 모두 jasperReports 의존 라이브러리이다. 이렇게 수동으로 추가해준 이유는,
+	* 자동으로 불러와버리면 jar파일을 수정하지 못한다. 수정해서 빌드했어야 했다.
+	* 왜냐면, 인코딩이 안된다.. 출력물 (pdf한글)
+	**/
+	implementation group: 'com.lowagie', name: 'itext', version: '2.1.7'
 	compileOnly 'org.projectlombok:lombok'
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
