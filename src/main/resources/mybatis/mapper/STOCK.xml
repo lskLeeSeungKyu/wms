@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.server.boot.dao.StockDAO">
+    <select id="selectStock" parameterType="map" resultType="Map">
+        select * from "WMS"."STOCK" WHERE "ORDER_DATE" = #{ORDER_DATE} order by "LINE_NO", "ORDER_DATE"
+    </select>
+</mapper>

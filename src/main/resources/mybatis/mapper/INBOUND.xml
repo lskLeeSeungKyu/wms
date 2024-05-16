@@ -73,10 +73,6 @@
         select "INSPECTION_YN" from "WMS"."INB_OR_D" WHERE "TRANS_NO" = #{TRANS_NO}
     </select>
 
-    <select id="selectStock" parameterType="map" resultType="Map">
-        select * from "WMS"."STOCK" WHERE "ORDER_DATE" = #{ORDER_DATE} order by "LINE_NO", "ORDER_DATE"
-    </select>
-
     <update id="inbGenerateU" parameterType="map">
         update "WMS"."INB_OR_U" set "TRANS_STATUS_FILE" = '생성완료' WHERE "TRANS_STATUS_FILE" = '생성전' AND "ORDER_NO_CUST" = #{ORDER_NO_CUST} AND "FILE_NM" = #{FILE_NM}
     </update>

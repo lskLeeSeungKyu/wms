@@ -16,7 +16,7 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://10.101.52.96:8081")
+@CrossOrigin(origins = "http://39.115.244.28:8081")
 public class UserController {
 
     private final UserService userService;

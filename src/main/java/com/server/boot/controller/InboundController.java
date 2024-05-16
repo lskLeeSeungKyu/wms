@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://10.101.52.96:8081")
+@CrossOrigin(origins = "http://39.115.244.28:8081")
 public class InboundController {
 
     private final InboundService inboundService;
@@ -91,12 +91,6 @@ public class InboundController {
     public List<Map<String, String>> selectInbConfirmValid(@RequestBody Map<String, String> map) {
         return inboundService.selectInbConfirmValid(map);
     }
-
-    @PostMapping("/selectStock")
-    public List<Map<String, String>> selectStock(@RequestBody Map<String, String> map) {
-        return inboundService.selectStock(map);
-    }
-
 
 
 

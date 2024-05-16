@@ -94,11 +94,6 @@ public class InboundService {
         return inboundDAO.selectInbConfirmValid(map);
     }
 
-    @Transactional(readOnly = true)
-    public List<Map<String, String>> selectStock(Map<String, String> map) {
-        return inboundDAO.selectStock(map);
-    }
-
     @Transactional
     public void inbInspection(List<Map<String, String>> list) {
 

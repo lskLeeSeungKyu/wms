@@ -3,6 +3,7 @@ import java.io.FileInputStream;
 import java.util.*;
 
 import com.server.boot.service.InboundService;
+import com.server.boot.service.StockService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
@@ -22,16 +23,15 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://10.101.52.96:8081")
+@CrossOrigin(origins = "http://39.115.244.28:8081")
 public class JasperController {
 
     private final InboundService inboundService;
+    private final StockService stockService;
 
     @GetMapping(value="inbOrderPrint/{date}/{file}")
     @Transactional(readOnly = true)
     public ResponseEntity<byte[]> inbOrderPrint(@PathVariable("date") String date, @PathVariable("file") String file) throws Exception, JRException {
-
-        System.out.println("date + file = " + date + file);
 
         Map<String, String> param = new HashMap<>();
 
@@ -57,6 +57,30 @@ public class JasperController {
 
         // return 방식2. 프린트 및 adobe pdf 화면 띄우기
         // *주의: 프론트에서 화면을 띄울 수 없고, 서버 url을 직접 띄워야함..
+        byte[] data = JasperExportManager.exportReportToPdf(report);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=InboundOrder.pdf");
+
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
+    }
+
+    @GetMapping(value="stockPrint/{date}")
+    @Transactional(readOnly = true)
+    public ResponseEntity<byte[]> stockPrint(@PathVariable("date") String date) throws Exception, JRException {
+
+        Map<String, String> param = new HashMap<>();
+
+        param.put("ORDER_DATE", date);
+
+        List<Map<String, String>> result = stockService.selectStock(param);
+
+        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(result);
+
+        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/jasper/InboundOrder.jrxml"));
+
+        Map<String, Object> map = new HashMap<>();
+        JasperPrint report = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
+
         byte[] data = JasperExportManager.exportReportToPdf(report);
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=InboundOrder.pdf");

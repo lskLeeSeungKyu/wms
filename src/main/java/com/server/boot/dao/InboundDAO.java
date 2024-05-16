@@ -22,7 +22,6 @@ public interface InboundDAO {
 
     List<Map<String, String>> selectInbConfirmValid(Map<String, String> map);
 
-    List<Map<String, String>> selectStock(Map<String, String> map);
 
     void insertUploadFile(Map<String, String> map);
 
