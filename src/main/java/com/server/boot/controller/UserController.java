@@ -17,7 +17,7 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://10.101.52.96:8081")
+@CrossOrigin(origins = "http://158.247.254.218:8081")
 public class UserController {
 
     private final UserService userService;
@@ -53,8 +53,7 @@ public class UserController {
     @PostMapping("/multiLogin.wms")
     public UserDTO multiLogin(@RequestBody Map<String, String> loginForm, HttpServletRequest request) {
         UserDTO userDTO = userService.login(loginForm);
-
-        System.out.println("userDTO = " + userDTO.getName());
+        
         HttpSession session = request.getSession();
 
         session.setAttribute("user", userDTO);
@@ -66,8 +65,14 @@ public class UserController {
     @PostMapping("/logout.wms")
     public void logout(HttpSession session) {
         UserDTO logoutUser = (UserDTO)session.getAttribute("user");
+        System.out.println("loginUsers = " + loginUsers);
         loginUsers.remove(logoutUser.getId());
         session.invalidate();
+    }
+
+    @PostMapping("/browserClose.wms") //현재 안씀
+    public void browserClose() {
+        System.out.println("close");
     }
 
     @PostMapping("/userModify")

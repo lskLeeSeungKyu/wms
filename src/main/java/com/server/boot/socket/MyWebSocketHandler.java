@@ -44,6 +44,7 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
                     sessions.remove(s);
                 }
             }
+            UserController.loginUsers.add(loginUser.getId());
         }
 
         System.out.println("Connected = " + session);
@@ -98,7 +99,26 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
                 s.sendMessage(new TextMessage(userList.toString()));
             }
         }
+
         socketSessionRepository.remove(session.getId());
         sessions.remove(session);
+
+        /*
+         * 사용자가 브라우저를 그냥 종료시켰을때, 중복로그인 체크를 위해 서버에서도 로그인한 유저 리스트에서 아이디를 삭제한다.
+         * 브라우저를 종료해도 웹소켓은 연결 해제된다.
+         **/
+        HttpSession httpSession = (HttpSession)session.getAttributes().get("HTTP_SESSION");
+
+        try {
+            UserDTO logoutUser = (UserDTO)httpSession.getAttribute("user");
+
+            if(logoutUser != null) {
+                UserController.loginUsers.remove(logoutUser.getId());
+            }
+
+        } catch (IllegalStateException e) {
+            System.out.println("예외 @@@@@@@" + e);
+        }
+
     }
 }
