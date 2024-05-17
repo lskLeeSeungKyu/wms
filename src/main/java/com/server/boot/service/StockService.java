@@ -21,4 +21,9 @@ public class StockService {
         return stockDAO.selectStock(map);
     }
 
+    @Transactional(readOnly = true)
+    public List<Map<String, String>> selectStockPrint() {
+        return stockDAO.selectStockPrint();
+    }
+
 }

@@ -2,6 +2,7 @@ package com.server.boot.controller;
 
 import com.server.boot.dto.UserDTO;
 import com.server.boot.service.UserService;
+import com.server.boot.socket.MyWebSocketHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -16,10 +17,11 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://39.115.244.28:8081")
+@CrossOrigin(origins = "http://10.101.52.96:8081")
 public class UserController {
 
     private final UserService userService;
+    private final MyWebSocketHandler myWebSocketHandler;
 
     public static List<String> loginUsers = new ArrayList<>();
 
@@ -91,5 +93,17 @@ public class UserController {
     @PostMapping("/mainPageQuery")
     public List<Map<String, Object>> mainPageQuery(@RequestBody String query) throws UnsupportedEncodingException {
         return userService.mainPageQuery(URLDecoder.decode(query, "UTF-8"));
+    }
+
+    @PostMapping("/selectUser")
+    public List<UserDTO> selectUser(@RequestBody Map<String, String> map) {
+        return userService.selectUser(map);
+    }
+
+    @PostMapping("/socketResetRequest")
+    public List<UserDTO> userProfiles() {
+        Map<String, UserDTO> socketSessionRepository = myWebSocketHandler.socketSessionRepository;
+        List<UserDTO> userList = new ArrayList<>(socketSessionRepository.values());
+        return userList;
     }
 }

@@ -10,4 +10,5 @@ public interface StockDAO {
 
     List<Map<String, String>> selectStock(Map<String, String> map);
 
+    List<Map<String, String>> selectStockPrint();
 }

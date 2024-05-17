@@ -15,21 +15,14 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://39.115.244.28:8081")
+@CrossOrigin(origins = "http://10.101.52.96:8081")
 public class InboundController {
 
     private final InboundService inboundService;
-    private final UserService userService;
-    private final MyWebSocketHandler myWebSocketHandler;
 
     @PostMapping("/selectInbOrder")
     public List<Map<String, String>> selectInbOrder(@RequestBody Map<String, String> map, @SessionAttribute("user") UserDTO user) {
         return inboundService.selectInbOrder(map);
-    }
-
-    @PostMapping("/selectUser")
-    public List<UserDTO> selectUser(@RequestBody Map<String, String> map) {
-        return userService.selectUser(map);
     }
 
     @PostMapping("/selectUploadFile")
@@ -92,15 +85,6 @@ public class InboundController {
         return inboundService.selectInbConfirmValid(map);
     }
 
-
-
-
-    @PostMapping("/socketResetRequest")
-    public List<UserDTO> userProfiles() {
-        Map<String, UserDTO> socketSessionRepository = myWebSocketHandler.socketSessionRepository;
-        List<UserDTO> userList = new ArrayList<>(socketSessionRepository.values());
-        return userList;
-    }
 
 
 }

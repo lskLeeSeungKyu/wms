@@ -2,6 +2,7 @@ package com.server.boot.controller;
 import java.io.FileInputStream;
 import java.util.*;
 
+import com.server.boot.dao.OutboundDAO;
 import com.server.boot.service.InboundService;
 import com.server.boot.service.StockService;
 import lombok.RequiredArgsConstructor;
@@ -23,13 +24,14 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://39.115.244.28:8081")
+@CrossOrigin(origins = "http://10.101.52.96:8081")
 public class JasperController {
 
     private final InboundService inboundService;
     private final StockService stockService;
+    private final OutboundDAO outboundDAO;
 
-    @GetMapping(value="inbOrderPrint/{date}/{file}")
+    @GetMapping("/inbOrderPrint/{date}/{file}")
     @Transactional(readOnly = true)
     public ResponseEntity<byte[]> inbOrderPrint(@PathVariable("date") String date, @PathVariable("file") String file) throws Exception, JRException {
 
@@ -64,19 +66,20 @@ public class JasperController {
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
     }
 
-    @GetMapping(value="stockPrint/{date}")
+    @GetMapping("/outOrderPrint/{date}/{file}")
     @Transactional(readOnly = true)
-    public ResponseEntity<byte[]> stockPrint(@PathVariable("date") String date) throws Exception, JRException {
+    public ResponseEntity<byte[]> outOrderPrint(@PathVariable("date") String date, @PathVariable("file") String file) throws Exception, JRException {
 
         Map<String, String> param = new HashMap<>();
 
         param.put("ORDER_DATE", date);
+        param.put("FILE_NM", file);
 
-        List<Map<String, String>> result = stockService.selectStock(param);
+        List<Map<String, String>> result = outboundDAO.selectOutOrder(param);
 
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(result);
 
-        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/jasper/InboundOrder.jrxml"));
+        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/jasper/OutboundOrder.jrxml"));
 
         Map<String, Object> map = new HashMap<>();
         JasperPrint report = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
@@ -84,6 +87,26 @@ public class JasperController {
         byte[] data = JasperExportManager.exportReportToPdf(report);
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=InboundOrder.pdf");
+
+        return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
+    }
+
+    @GetMapping("/stockPrint")
+    @Transactional(readOnly = true)
+    public ResponseEntity<byte[]> stockPrint() throws Exception, JRException {
+
+        List<Map<String, String>> result = stockService.selectStockPrint();
+
+        JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(result);
+
+        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/jasper/Stock.jrxml"));
+
+        Map<String, Object> map = new HashMap<>();
+        JasperPrint report = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
+
+        byte[] data = JasperExportManager.exportReportToPdf(report);
+        HttpHeaders headers = new HttpHeaders();
+        headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=Stock.pdf");
 
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
     }

@@ -2,9 +2,9 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
         "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
-<mapper namespace="com.server.boot.dao.InboundDAO">
-    <select id="selectInbOrder" parameterType="java.util.Map" resultType="Map">
-        select * from "WMS"."INB_OR_U"
+<mapper namespace="com.server.boot.dao.OutboundDAO">
+    <select id="selectOutOrder" parameterType="java.util.Map" resultType="Map">
+        select * from "WMS"."OUT_OR_U"
         <where>
             <if test="ORDER_DATE != null and ORDER_DATE != ''">
                 AND "ORDER_DATE" = #{ORDER_DATE}
@@ -26,7 +26,7 @@
     </select>
 
     <select id="selectUploadFile" parameterType="java.util.Map" resultType="Map">
-        select "CREATE_ON", "FILE_NM", "ORDER_DATE" from "WMS"."INB_OR_U"
+        select "CREATE_ON", "FILE_NM", "ORDER_DATE" from "WMS"."OUT_OR_U"
         <where>
             <if test="ORDER_DATE != null and ORDER_DATE != ''">
                 AND "ORDER_DATE" = #{ORDER_DATE}
@@ -40,11 +40,11 @@
     </select>
 
     <select id="selectTransNo" resultType="String">
-        select "WMS".TRANS_NO_GENERATE()
+        select "WMS".OUT_TRANS_NO_GENERATE()
     </select>
 
-    <select id="selectInbOrderEntry" parameterType="map" resultType="Map">
-        select "ORDER_DATE", "ORDER_NO_CUST", "ENTRY_YN" from "WMS"."INB_OR_U" WHERE "TRANS_STATUS_FILE" = '생성완료'
+    <select id="selectOutOrderEntry" parameterType="map" resultType="Map">
+        select "ORDER_DATE", "ORDER_NO_CUST", "ENTRY_YN" from "WMS"."OUT_OR_U" WHERE "TRANS_STATUS_FILE" = '생성완료'
             <if test="ORDER_DATE != null and ORDER_DATE != ''">
                 AND "ORDER_DATE" = #{ORDER_DATE}
             </if>
@@ -52,12 +52,12 @@
         order by "ORDER_DATE"
     </select>
 
-    <select id="selectInbOrderEntryDetail" parameterType="map" resultType="Map">
-        select * from "WMS"."INB_OR_U" WHERE "ORDER_NO_CUST" = #{ORDER_NO_CUST} order by "LINE_NO"
+    <select id="selectOutOrderEntryDetail" parameterType="map" resultType="Map">
+        select * from "WMS"."OUT_OR_U" WHERE "ORDER_NO_CUST" = #{ORDER_NO_CUST} order by "LINE_NO"
     </select>
 
-    <select id="selectInbInspection" parameterType="map" resultType="Map">
-        select "ORDER_DATE", "TRANS_NO", "CONFIRM_YN" from "WMS"."INB_OR_M" WHERE "TRANS_NO" = #{TRANS_NO}
+    <select id="selectOutInspection" parameterType="map" resultType="Map">
+        select "ORDER_DATE", "TRANS_NO", "CONFIRM_YN" from "WMS"."OUT_OR_M" WHERE "TRANS_NO" = #{TRANS_NO}
             <if test="ORDER_DATE != null and ORDER_DATE != ''">
                 AND "ORDER_DATE" = #{ORDER_DATE}
             </if>
@@ -65,34 +65,34 @@
         order by "ORDER_DATE"
     </select>
 
-    <select id="selectInbInspectionDetail" parameterType="map" resultType="Map">
-        select * from "WMS"."INB_OR_D" WHERE "TRANS_NO" = #{TRANS_NO} order by "LINE_NO"
+    <select id="selectOutInspectionDetail" parameterType="map" resultType="Map">
+        select * from "WMS"."OUT_OR_D" WHERE "TRANS_NO" = #{TRANS_NO} order by "LINE_NO"
     </select>
 
-    <select id="selectInbConfirmValid" parameterType="map" resultType="Map">
-        select "INSPECTION_YN" from "WMS"."INB_OR_D" WHERE "TRANS_NO" = #{TRANS_NO}
+    <select id="selectOutConfirmValid" parameterType="map" resultType="Map">
+        select "INSPECTION_YN" from "WMS"."OUT_OR_D" WHERE "TRANS_NO" = #{TRANS_NO}
     </select>
 
-    <update id="inbGenerateU" parameterType="map">
-        update "WMS"."INB_OR_U" set "TRANS_STATUS_FILE" = '생성완료' WHERE "TRANS_STATUS_FILE" = '생성전' AND "ORDER_NO_CUST" = #{ORDER_NO_CUST} AND "FILE_NM" = #{FILE_NM}
+    <update id="outGenerateU" parameterType="map">
+        update "WMS"."OUT_OR_U" set "TRANS_STATUS_FILE" = '생성완료' WHERE "TRANS_STATUS_FILE" = '생성전' AND "ORDER_NO_CUST" = #{ORDER_NO_CUST} AND "FILE_NM" = #{FILE_NM}
     </update>
 
-    <insert id="inbGenerateM" parameterType="map">
-        insert into "WMS"."INB_OR_M"
+    <insert id="outGenerateM" parameterType="map">
+        insert into "WMS"."OUT_OR_M"
             ("CUST_CD", "ORDER_DATE", "FILE_NM", "TRANS_NO", "CONFIRM_YN", "CREATE_ON")
         values
             (#{CUST_CD}, #{ORDER_DATE}, #{FILE_NM}, #{TRANS_NO}, '미확정', #{CREATE_ON})
     </insert>
 
-    <insert id="inbGenerateD" parameterType="map">
-        insert into "WMS"."INB_OR_D"
+    <insert id="outGenerateD" parameterType="map">
+        insert into "WMS"."OUT_OR_D"
         ("CUST_CD", "ITEM_CD", "ITEM_CD_CUST", "ITEM_NM", "OPT_SIZE", "OPT_COLOR", "ORDER_QTY", "TRANS_NO", "ZONE_CD", "LOC_CD", "LINE_NO", "FILE_NM", "ORDER_DATE", "CREATE_ON", "INSPECTION_YN")
         values
         (#{CUST_CD}, #{ITEM_CD}, #{ITEM_CD_CUST}, #{ITEM_NM}, #{OPT_SIZE}, #{OPT_COLOR}, #{ORDER_QTY}, #{TRANS_NO}, 'A', '000001', #{LINE_NO}, #{FILE_NM}, #{ORDER_DATE}, #{CREATE_ON}, #{INSPECTION_YN})
     </insert>
 
     <insert id="insertUploadFile" parameterType="map">
-        insert into "WMS"."INB_OR_U"
+        insert into "WMS"."OUT_OR_U"
         ("CUST_CD", "ITEM_CD", "ITEM_CD_CUST", "ITEM_NM", "OPT_SIZE", "OPT_COLOR", "ORDER_QTY", "ORDER_NO_CUST", "ZONE_CD", "ENTRY_YN", "LOC_CD", "LINE_NO", "FILE_NM", "ORDER_DATE", "TRANS_STATUS_FILE", "CREATE_ON")
         values
         (#{CUST_CD}, #{ITEM_CD}, #{ITEM_CD_CUST}, #{ITEM_NM}, #{OPT_SIZE}, #{OPT_COLOR}, #{ORDER_QTY}, #{TRANS_NO}, 'A', '미등록', '000001', #{LINE_NO}, #{FILE_NM}, #{ORDER_DATE}, '생성전', #{CREATE_ON})
@@ -105,24 +105,24 @@
         (#{CUST_CD}, #{ITEM_CD}, #{ITEM_CD_CUST}, #{ITEM_NM}, #{OPT_SIZE}, #{OPT_COLOR}, #{ORDER_QTY}, #{TRANS_NO}, 'A', '000001', #{LINE_NO}, #{FILE_NM}, #{ORDER_DATE}, #{CREATE_ON})
     </insert>
 
-    <update id="updateStock" parameterType="map">
-        update "WMS"."STOCK" set "ORDER_QTY" = #{ORDER_QTY} WHERE "ITEM_CD" = #{ITEM_CD}
+    <update id="outGenerateD2" parameterType="map">
+        update "WMS"."OUT_OR_U" set "ENTRY_YN" = '등록' WHERE "ENTRY_YN" = '미등록' AND "ORDER_NO_CUST" = #{ORDER_NO_CUST}
     </update>
 
-    <update id="inbGenerateD2" parameterType="map">
-        update "WMS"."INB_OR_U" set "ENTRY_YN" = '등록' WHERE "ENTRY_YN" = '미등록' AND "ORDER_NO_CUST" = #{ORDER_NO_CUST}
+    <update id="outInspection" parameterType="map">
+        update "WMS"."OUT_OR_D" set "INSPECTION_YN" = 'Y' WHERE "LINE_NO" = #{LINE_NO} AND "TRANS_NO" = #{TRANS_NO}
     </update>
 
-    <update id="inbInspection" parameterType="map">
-        update "WMS"."INB_OR_D" set "INSPECTION_YN" = 'Y' WHERE "LINE_NO" = #{LINE_NO} AND "TRANS_NO" = #{TRANS_NO}
+    <update id="outInspectionCancel" parameterType="map">
+        update "WMS"."OUT_OR_D" set "INSPECTION_YN" = 'N' WHERE "LINE_NO" = #{LINE_NO} AND "TRANS_NO" = #{TRANS_NO}
     </update>
 
-    <update id="inbInspectionCancel" parameterType="map">
-        update "WMS"."INB_OR_D" set "INSPECTION_YN" = 'N' WHERE "LINE_NO" = #{LINE_NO} AND "TRANS_NO" = #{TRANS_NO}
+    <update id="outConfirm" parameterType="map">
+        update "WMS"."OUT_OR_M" set "CONFIRM_YN" = '확정' WHERE "TRANS_NO" = #{TRANS_NO}
     </update>
 
-    <update id="inbConfirm" parameterType="map">
-        update "WMS"."INB_OR_M" set "CONFIRM_YN" = '확정' WHERE "TRANS_NO" = #{TRANS_NO}
-    </update>
+    <delete id="deleteStock" parameterType="String">
+        delete from "WMS"."STOCK" where "ITEM_CD" = #{itemCd}
+    </delete>
 
 </mapper>

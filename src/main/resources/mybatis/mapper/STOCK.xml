@@ -4,6 +4,14 @@
 
 <mapper namespace="com.server.boot.dao.StockDAO">
     <select id="selectStock" parameterType="map" resultType="Map">
-        select * from "WMS"."STOCK" WHERE "ORDER_DATE" = #{ORDER_DATE} order by "LINE_NO", "ORDER_DATE"
+        select * from "WMS"."STOCK"
+          <if test="ITEM_CD != null and ITEM_CD != ''">
+              WHERE "ITEM_CD" = #{ITEM_CD}
+          </if>
+        order by "LINE_NO", "ORDER_DATE"
+    </select>
+
+    <select id="selectStockPrint" resultType="Map">
+        select * from "WMS"."STOCK" order by "LINE_NO", "ORDER_DATE"
     </select>
 </mapper>

@@ -43,4 +43,6 @@ public interface InboundDAO {
 
     void insertStock(Map<String, String> item);
 
+    void updateStock(Map<String, String> orderQty);
+
 }

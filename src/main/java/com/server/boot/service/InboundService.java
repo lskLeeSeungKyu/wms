@@ -1,6 +1,7 @@
 package com.server.boot.service;
 
 import com.server.boot.dao.InboundDAO;
+import com.server.boot.dao.StockDAO;
 import com.server.boot.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -9,12 +10,14 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
 public class InboundService {
 
     private final InboundDAO inboundDAO;
+    private final StockDAO stockDAO;
 
     @Transactional(readOnly = true)
     public List<Map<String, String>> selectInbOrder(Map<String, String> map) {
@@ -105,6 +108,10 @@ public class InboundService {
     @Transactional
     public void inbInspectionCancel(List<Map<String, String>> list) {
 
+        Map<String, String> blankMap = new HashMap<>();
+
+        List<Map<String, String>> stockData = stockDAO.selectStock(blankMap);
+
         for(Map map : list) {
             inboundDAO.inbInspectionCancel(map);
         }
@@ -113,12 +120,42 @@ public class InboundService {
     @Transactional
     public void inbConfirm(Map<String, String> map) {
 
+        Map<String, String> blankMap = new HashMap<>();
+
+        List<Map<String, String>> stockData = stockDAO.selectStock(blankMap);
+
         inboundDAO.inbConfirm(map);
         List<Map<String,String>> list = inboundDAO.selectInbInspectionDetail(map);
 
+        boolean updateFlag = false;
+
         for(Map item : list) {
-            System.out.println("item = " + item);
-            inboundDAO.insertStock(item);
+            for(Map item2 : stockData) {
+
+                if(Objects.equals(item.get("ITEM_CD"), item2.get("ITEM_CD"))) {
+                    int itemOrderQty = Integer.parseInt((String)item.get("ORDER_QTY"));
+                    int item2OrderQty = Integer.parseInt((String)item2.get("ORDER_QTY"));
+
+                    int sumStockItem = itemOrderQty + item2OrderQty;
+
+                    String convertStringOrderQty = String.valueOf(sumStockItem);
+
+                    Map<String, String> insertMap = new HashMap<>();
+
+                    insertMap.put("ITEM_CD", (String)item.get("ITEM_CD"));
+                    insertMap.put("ORDER_QTY", convertStringOrderQty);
+
+                    inboundDAO.updateStock(insertMap);
+                    updateFlag = true;
+                }
+            }
+
+            if(updateFlag == false) {
+                inboundDAO.insertStock(item);
+            }
+
+            updateFlag = false;
+
         }
     }
 
