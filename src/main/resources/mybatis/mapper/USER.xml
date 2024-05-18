@@ -35,6 +35,15 @@
         (#{id}, #{pw}, #{email}, #{hTel}, #{name})
     </insert>
 
+    <insert id="messageLog" parameterType="UserDTO">
+        INSERT INTO "WMS"."message_log" ("message") VALUES (#{message})
+    </insert>
+
+    <insert id="requestLog" parameterType="UserDTO">
+        INSERT INTO "WMS"."request_log" ("user_id", "user_name", "user_execute", "user_request", "user_ip", "time") VALUES
+            (#{userId}, #{userName}, #{handlerMethod}, #{requestURL}, #{userIp}, #{time})
+    </insert>
+
     <delete id="userDelete" parameterType="UserDTO">
         DELETE FROM "WMS"."USER" WHERE "ID" = #{id}
     </delete>

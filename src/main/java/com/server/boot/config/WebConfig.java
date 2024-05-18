@@ -1,7 +1,11 @@
 package com.server.boot.config;
 
 import com.server.boot.filter.CookieAttributeFilter;
+import com.server.boot.interceptor.MethodInterceptor;
 import com.server.boot.interceptor.UserInterceptor;
+import com.server.boot.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Required;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -12,14 +16,22 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 import javax.servlet.Filter;
 
 @Component
+@RequiredArgsConstructor
 public class WebConfig implements WebMvcConfigurer {
+
+    private final UserService userService;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(new UserInterceptor())
+//        registry.addInterceptor(new UserInterceptor())
+//                .order(1)
+//                .addPathPatterns("/**")
+//                .excludePathPatterns("/", "/login.wms", "/logout.wms");
+
+        registry.addInterceptor(new MethodInterceptor(userService))
                 .order(1)
                 .addPathPatterns("/**")
-                .excludePathPatterns("/", "/login.wms", "/logout.wms");
+                .excludePathPatterns("/logout.wms", "/sessionInfo");
     }
 
     @Override

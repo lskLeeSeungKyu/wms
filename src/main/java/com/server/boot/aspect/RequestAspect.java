@@ -13,7 +13,7 @@ public class RequestAspect {
     @After("execution(* com.server.boot.controller.*.*(..))")
     public void test() throws Throwable {
 
-        System.out.println("메서드 호출 후 실행되는 Aspect");
+        System.out.println("method execute");
         //Object obj = proceedingJoinPoint.proceed();
     }
 }

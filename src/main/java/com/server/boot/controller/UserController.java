@@ -111,4 +111,5 @@ public class UserController {
         List<UserDTO> userList = new ArrayList<>(socketSessionRepository.values());
         return userList;
     }
+
 }

@@ -16,7 +16,9 @@ public class UserInterceptor implements HandlerInterceptor {
 //        CookieUtil cookieUtil = new CookieUtil();
 //        cookieUtil.addCookie(request, response);
 
-
+        //브라우저 네트워크 탭에서 api 두 번 요청하는 이유가 뭘까? 하나는 세션이 없는 것.
+        //그래서 MethodInterceptor에서도 user.id를 넣지못함.
+        //일단 인터셉터 적용 x
 
         HttpSession session = request.getSession();
         if(session.getAttribute("user") == null) {

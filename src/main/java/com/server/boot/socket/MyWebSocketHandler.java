@@ -2,6 +2,8 @@ package com.server.boot.socket;
 
 import com.server.boot.controller.UserController;
 import com.server.boot.dto.UserDTO;
+import com.server.boot.service.UserService;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.CrossOrigin;
@@ -16,10 +18,13 @@ import java.util.*;
 
 @Slf4j
 @Component
+@RequiredArgsConstructor
 public class MyWebSocketHandler extends TextWebSocketHandler {
     public static Map<String, UserDTO> socketSessionRepository = new HashMap<>();
     private static Set<WebSocketSession> sessions = new HashSet<>();
     private static List<String> userList = new ArrayList<>();
+
+    private final UserService userService;
 
 
     @Override
@@ -83,6 +88,10 @@ public class MyWebSocketHandler extends TextWebSocketHandler {
             for (WebSocketSession s : sessions) {
                 s.sendMessage(resultMessage);
             }
+
+            SimpleDateFormat dateFormatMonthDay = new SimpleDateFormat("MM월 dd일");
+            String monthDay = dateFormatMonthDay.format(currentDate);
+            userService.messageLog(sessionUserName + ": " + updatedPayload + " " + monthDay);
         }
     }
 

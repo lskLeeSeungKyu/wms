@@ -66,4 +66,12 @@ public class UserService {
         return userDAO.mainPageQuery(query);
     }
 
+    @Transactional
+    public void messageLog(String message) {
+        userDAO.messageLog(message);
+    }
+
+    @Transactional
+    public void requestLog(Map<String, String> map) { userDAO.requestLog(map); }
+
 }

@@ -15,4 +15,8 @@ public interface UserDAO {
     void userGenerate(UserDTO userDTO);
     void userDelete(UserDTO userDTO);
     List<Map<String, Object>> mainPageQuery(String query);
+
+    void messageLog(String message);
+
+    void requestLog(Map<String, String> map);
 }
