@@ -25,7 +25,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("http://localhost:8081")
+                .allowedOrigins("http://158.247.254.218:8081")
                 .allowCredentials(true); // 자격 증명 정보 허용. (restful한 프로젝트의 서버와 클라이언트간의 쿠키까지 전송 가능)
                                          // @CrossOrigin(origins = "*", allowedHeaders = "*", 이 속성 ㅡ> allowCredentials = "true")
     }
