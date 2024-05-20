@@ -56,6 +56,15 @@ public class RCEDefenseFilter implements Filter {
                 requestURI.contains(")") ||
                 requestURI.contains("<") ||
                 requestURI.contains(">") ||
+                requestURI.contains("script") ||
+                requestURI.contains("Script") ||
+                requestURI.contains("nashorn") ||
+                requestURI.contains("java") ||
+                requestURI.contains("eval") ||
+                requestURI.contains("command") ||
+                requestURI.contains("start") ||
+                requestURI.contains("bat") ||
+                requestURI.contains("sh") ||
                 !requestURI.startsWith("/") ||
                 requestURI.equals("/")) {
 
