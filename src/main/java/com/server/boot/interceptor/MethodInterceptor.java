@@ -36,6 +36,7 @@ public class MethodInterceptor implements HandlerInterceptor {
 //        map.put("userName", user.getName());
         map.put("userIp", request.getRemoteAddr());
         map.put("time", dateFormatMonthDay.format(currentDate));
+        map.put("userAgent", request.getHeader("user-Agent"));
 
         userService.requestLog(map);
 

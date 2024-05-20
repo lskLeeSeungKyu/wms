@@ -19,4 +19,6 @@ public interface UserDAO {
     void messageLog(String message);
 
     void requestLog(Map<String, String> map);
+
+    void filterLog(Map<String, String> map);
 }

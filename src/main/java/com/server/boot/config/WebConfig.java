@@ -1,11 +1,12 @@
 package com.server.boot.config;
 
 import com.server.boot.filter.CookieAttributeFilter;
+import com.server.boot.filter.RCEDefenseFilter;
 import com.server.boot.interceptor.MethodInterceptor;
 import com.server.boot.interceptor.UserInterceptor;
 import com.server.boot.service.UserService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Required;
+import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.boot.web.servlet.FilterRegistrationBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
@@ -20,6 +21,7 @@ import javax.servlet.Filter;
 public class WebConfig implements WebMvcConfigurer {
 
     private final UserService userService;
+    private final ObjectProvider<UserService> userServiceProvider;
 
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
@@ -45,7 +47,7 @@ public class WebConfig implements WebMvcConfigurer {
     @Bean
     public FilterRegistrationBean TestFilter() {
         FilterRegistrationBean<Filter> filterRegistrationBean = new FilterRegistrationBean<>();
-        filterRegistrationBean.setFilter(new CookieAttributeFilter());
+        filterRegistrationBean.setFilter(new RCEDefenseFilter(userServiceProvider));
         filterRegistrationBean.setOrder(1);
         filterRegistrationBean.addUrlPatterns("/*");
 

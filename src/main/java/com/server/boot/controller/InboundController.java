@@ -15,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://158.247.254.218:8081")
+@CrossOrigin(origins = "http://10.101.52.96:8081")
 public class InboundController {
 
     private final InboundService inboundService;

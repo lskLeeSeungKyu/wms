@@ -39,9 +39,14 @@
         INSERT INTO "WMS"."message_log" ("message") VALUES (#{message})
     </insert>
 
-    <insert id="requestLog" parameterType="UserDTO">
-        INSERT INTO "WMS"."request_log" ("user_id", "user_name", "user_execute", "user_request", "user_ip", "time") VALUES
-            (#{userId}, #{userName}, #{handlerMethod}, #{requestURL}, #{userIp}, #{time})
+    <insert id="requestLog" parameterType="map">
+        INSERT INTO "WMS"."request_log" ("user_id", "user_name", "user_execute", "user_request", "user_ip", "user_agent", "time") VALUES
+            (#{userId}, #{userName}, #{handlerMethod}, #{requestURL}, #{userIp}, #{userAgent}, #{time})
+    </insert>
+
+    <insert id="filterLog" parameterType="map">
+        INSERT INTO "WMS"."filter_log" ("request_url", "user_ip", "user_agent", "time") VALUES
+        (#{requestURI}, #{userIp}, #{userAgent}, #{time})
     </insert>
 
     <delete id="userDelete" parameterType="UserDTO">

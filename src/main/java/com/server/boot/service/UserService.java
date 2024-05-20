@@ -74,4 +74,7 @@ public class UserService {
     @Transactional
     public void requestLog(Map<String, String> map) { userDAO.requestLog(map); }
 
+    @Transactional
+    public void filterLog(Map<String, String> map) { userDAO.filterLog(map); }
+
 }
