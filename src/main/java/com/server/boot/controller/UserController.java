@@ -17,7 +17,7 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://10.101.52.96:8081")
+@CrossOrigin(origins = "http://64.176.225.239:8080")
 public class UserController {
 
     private final UserService userService;
@@ -95,10 +95,10 @@ public class UserController {
         return (UserDTO)session.getAttribute("user");
     }
 
-    @PostMapping("/mainPageQuery")
+/*    @PostMapping("/mainPageQuery")
     public List<Map<String, Object>> mainPageQuery(@RequestBody String query) throws UnsupportedEncodingException {
         return userService.mainPageQuery(URLDecoder.decode(query, "UTF-8"));
-    }
+    }*/
 
     @PostMapping("/selectUser")
     public List<UserDTO> selectUser(@RequestBody Map<String, String> map) {

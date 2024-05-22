@@ -28,7 +28,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://10.101.52.96:8081")
+@CrossOrigin(origins = "http://64.176.225.239:8080")
 public class JasperController {
 
     private final InboundService inboundService;
