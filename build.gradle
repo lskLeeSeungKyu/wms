@@ -4,6 +4,22 @@ plugins {
 	id 'io.spring.dependency-management' version '1.0.15.RELEASE'
 }
 
+bootJar{
+	enabled=true
+	archiveClassifier = '' // use empty string
+
+	from { // 의존성 포함
+		configurations.runtimeClasspath.collect {
+			it.isDirectory() ? it : zipTree(it)
+		}
+	}
+	duplicatesStrategy = DuplicatesStrategy.EXCLUDE  // 중복처리
+
+	manifest {
+		attributes 'Main-Class': 'com.server.boot.BootApplication'
+	}
+}
+
 group = 'com.project'
 version = '0.0.1-SNAPSHOT'
 sourceCompatibility = '1.8'
@@ -40,6 +56,7 @@ dependencies {
 	developmentOnly 'org.springframework.boot:spring-boot-devtools'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
 }
 
 tasks.named('test') {

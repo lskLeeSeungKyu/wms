@@ -1,11 +1,15 @@
 package com.server.boot.controller;
 import java.io.FileInputStream;
+import java.io.InputStream;
 import java.util.*;
 
 import com.server.boot.dao.OutboundDAO;
 import com.server.boot.service.InboundService;
 import com.server.boot.service.StockService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.ResourceLoader;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -46,8 +50,10 @@ public class JasperController {
         // 받아온 데이터를 jasper datasource로 등록
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(result);
 
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jasper/InboundOrder.jrxml");
+
         // jasper 컴파일할 양식 설정 - 만들어둔 jrxml 파일 경로 설정
-        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/jasper/InboundOrder.jrxml"));
+        JasperReport compileReport = JasperCompileManager.compileReport(inputStream);
 
         // datasource를 매핑해 양식(jrxml)에 맞게 컴파일
         Map<String, Object> map = new HashMap<>();
@@ -62,6 +68,8 @@ public class JasperController {
         byte[] data = JasperExportManager.exportReportToPdf(report);
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=InboundOrder.pdf");
+
+        inputStream.close();
 
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
     }
@@ -79,7 +87,9 @@ public class JasperController {
 
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(result);
 
-        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/jasper/OutboundOrder.jrxml"));
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jasper/OutboundOrder.jrxml");
+
+        JasperReport compileReport = JasperCompileManager.compileReport(inputStream);
 
         Map<String, Object> map = new HashMap<>();
         JasperPrint report = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
@@ -87,6 +97,8 @@ public class JasperController {
         byte[] data = JasperExportManager.exportReportToPdf(report);
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=InboundOrder.pdf");
+
+        inputStream.close();
 
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
     }
@@ -99,7 +111,13 @@ public class JasperController {
 
         JRBeanCollectionDataSource beanCollectionDataSource = new JRBeanCollectionDataSource(result);
 
-        JasperReport compileReport = JasperCompileManager.compileReport(new FileInputStream("src/main/resources/jasper/Stock.jrxml"));
+//        Resource resource = new ClassPathResource("jasper/Stock.jrxml");
+//        InputStream inputStream = resource.getInputStream();
+        //이렇게 하니까 NPE가 뜸. 왜 null인지는 모르겠는데 그래서 밑에처럼 함. 정상 작동.
+
+        InputStream inputStream = getClass().getClassLoader().getResourceAsStream("jasper/Stock.jrxml");
+
+        JasperReport compileReport = JasperCompileManager.compileReport(inputStream);
 
         Map<String, Object> map = new HashMap<>();
         JasperPrint report = JasperFillManager.fillReport(compileReport, map, beanCollectionDataSource);
@@ -107,6 +125,9 @@ public class JasperController {
         byte[] data = JasperExportManager.exportReportToPdf(report);
         HttpHeaders headers = new HttpHeaders();
         headers.set(HttpHeaders.CONTENT_DISPOSITION, "inline;filename=Stock.pdf");
+
+        //gc
+        inputStream.close();
 
         return ResponseEntity.ok().headers(headers).contentType(MediaType.APPLICATION_PDF).body(data);
     }
