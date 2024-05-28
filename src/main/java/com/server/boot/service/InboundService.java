@@ -4,6 +4,7 @@ import com.server.boot.dao.InboundDAO;
 import com.server.boot.dao.StockDAO;
 import com.server.boot.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,6 +31,7 @@ public class InboundService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "inbOrderPrint", allEntries = true)
     public void insertUploadFile(List<Map<String, String>> list) {
 
         // 작업번호 체번
@@ -118,6 +120,7 @@ public class InboundService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = {"stock", "stockPrint"}, allEntries = true)
     public void inbConfirm(Map<String, String> map) {
 
         Map<String, String> blankMap = new HashMap<>();

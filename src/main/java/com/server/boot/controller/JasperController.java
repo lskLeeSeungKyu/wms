@@ -1,5 +1,4 @@
 package com.server.boot.controller;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.util.*;
 
@@ -7,9 +6,7 @@ import com.server.boot.dao.OutboundDAO;
 import com.server.boot.service.InboundService;
 import com.server.boot.service.StockService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.core.io.ClassPathResource;
-import org.springframework.core.io.Resource;
-import org.springframework.core.io.ResourceLoader;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -28,7 +25,7 @@ import net.sf.jasperreports.engine.data.JRBeanCollectionDataSource;
 
 @Controller
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://64.176.225.239:8080")
+@CrossOrigin(origins = "http://www.lsg-wms.site")
 public class JasperController {
 
     private final InboundService inboundService;
@@ -37,6 +34,7 @@ public class JasperController {
 
     @GetMapping("/inbOrderPrint/{date}/{file}")
     @Transactional(readOnly = true)
+    @Cacheable(value = "inbOrderPrint") // 많은 date,file 마다 캐싱할 경우 메모리 부하  현재는 업로드 마다 캐싱된 데이터 제거
     public ResponseEntity<byte[]> inbOrderPrint(@PathVariable("date") String date, @PathVariable("file") String file) throws Exception, JRException {
 
         Map<String, String> param = new HashMap<>();
@@ -76,6 +74,7 @@ public class JasperController {
 
     @GetMapping("/outOrderPrint/{date}/{file}")
     @Transactional(readOnly = true)
+    @Cacheable(value = "outOrderPrint")
     public ResponseEntity<byte[]> outOrderPrint(@PathVariable("date") String date, @PathVariable("file") String file) throws Exception, JRException {
 
         Map<String, String> param = new HashMap<>();
@@ -105,6 +104,7 @@ public class JasperController {
 
     @GetMapping("/stockPrint")
     @Transactional(readOnly = true)
+    @Cacheable(value = "stockPrint")
     public ResponseEntity<byte[]> stockPrint() throws Exception, JRException {
 
         List<Map<String, String>> result = stockService.selectStockPrint();

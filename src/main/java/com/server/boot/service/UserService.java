@@ -3,6 +3,8 @@ package com.server.boot.service;
 import com.server.boot.dao.UserDAO;
 import com.server.boot.dto.UserDTO;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -26,11 +28,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
+    @Cacheable(value = "user")
     public List<UserDTO> selectUser(Map<String, String> map) {
         return userDAO.selectUser(map);
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "user", allEntries = true)
     public Map<String, Object> userModify(UserDTO userDTO) {
         userDAO.userModify(userDTO);
         Map<String, Object> resultMap = new HashMap<>();
@@ -40,6 +44,7 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "user", allEntries = true)
     public Map<String, Object> userGenerate(UserDTO userDTO) {
         userDAO.userGenerate(userDTO);
         Map<String, Object> resultMap = new HashMap<>();
@@ -49,8 +54,8 @@ public class UserService {
     }
 
     @Transactional
+    @CacheEvict(cacheNames = "user", allEntries = true)
     public Map<String, Object> userDelete(List<UserDTO> userDTO) {
-        System.out.println("userDTO = " + userDTO);
         for(UserDTO user : userDTO) {
             userDAO.userDelete(user);
         }

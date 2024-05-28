@@ -6,6 +6,7 @@ import com.server.boot.service.StockService;
 import com.server.boot.service.UserService;
 import com.server.boot.socket.MyWebSocketHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ import java.util.Map;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://64.176.225.239:8080")
+@CrossOrigin(origins = "http://www.lsg-wms.site")
 public class StockController {
 
     private final StockService stockService;

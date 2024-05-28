@@ -4,6 +4,7 @@ import com.server.boot.dto.UserDTO;
 import com.server.boot.service.UserService;
 import com.server.boot.socket.MyWebSocketHandler;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -17,7 +18,7 @@ import java.util.*;
 
 @RestController
 @RequiredArgsConstructor
-@CrossOrigin(origins = "http://64.176.225.239:8080")
+@CrossOrigin(origins = "http://www.lsg-wms.site")
 public class UserController {
 
     private final UserService userService;

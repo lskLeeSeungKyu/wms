@@ -20,7 +20,7 @@ public class WebSocketConfig implements WebSocketConfigurer {
     public void registerWebSocketHandlers(WebSocketHandlerRegistry registry) {
         registry.addHandler(new MyWebSocketHandler(userService), "/websocket-endpoint")
                 .addInterceptors(new CustomHttpSessionHandshakeInterceptor())
-                .setAllowedOrigins("http://64.176.225.239:8080");
+                .setAllowedOrigins("http://www.lsg-wms.site");
     }
 
 }

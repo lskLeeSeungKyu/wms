@@ -9,7 +9,7 @@ import org.springframework.stereotype.Component;
 @Component
 @Aspect
 public class RequestAspect {
-// 왜 @Around(RestController 포인트컷) 은 적용이안되고(반응이 없음), Controller 포인트컷은 api요청은 이상하고, 콘솔은 찍히는지..
+// 왜 @Around(RestController 포인트컷) 은 적용이안되고(반응이 없음), Controller 포인트컷은 api요청은 이상하고, 콘솔은 찍히는지.. 이따 볼것
     @After("execution(* com.server.boot.controller.*.*(..))")
     public void test() throws Throwable {
 

